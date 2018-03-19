@@ -1,0 +1,54 @@
+<html>
+
+<head>
+    <!-- 1) jQuery will be allowed because it is accepted by script-src -->
+    <script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+
+    <!-- 2) Google analytics is blocked because a CSP exists and it is not white listed. -->
+    <script src="https://www.google-analytics.com/analytics.js"></script>
+
+    <script>
+        // The Ajax call to yahooapis.com is allowed because it is white listed by connect-src.
+        $(function(){
+            $.ajax({
+                'url' : 'https://query.yahooapis.com/v1/public/yql?q=select%20wind%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22chicago%2C%20il%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys',
+                'type' : 'GET',
+                'data' : {
+                },
+                'success' : function(result) {              
+                    alert('Data: ' + result);
+                },
+                'error' : function(request, error)
+                {
+                    alert("Error retrieving data from query.yahooapis.com: "+ JSON.stringify(request));
+                }
+            });
+        });
+
+        // This call will fail even though CPS allows it, because there is no access control origin header.
+        $(function(){
+            $.ajax({
+                'url' : 'http://awsazairl1088.jnj.com/predictions?asset=1',
+                'type' : 'GET',
+                'data' : {
+                },
+                'success' : function(result) {              
+                    alert('Data: ' + result);
+                },
+                'error' : function(request, error)
+                {
+                    alert("Error retrieving data from dev-hcp-portal.apps.dnadev.jnj: "+ JSON.stringify(request));
+                }
+            });
+        });
+
+    </script>
+</head>
+
+<body>
+    Hello
+</body>
+</html>
